@@ -68,7 +68,7 @@ impl EscrowContract {
         let mut bytes = Bytes::new(&env);
         bytes.append(&consumer.clone().to_xdr(&env));
         bytes.append(&provider.clone().to_xdr(&env));
-        bytes.append(&api_id.to_xdr(&env));
+        bytes.append(&api_id.clone().to_xdr(&env));
         let timestamp = env.ledger().timestamp();
         bytes.append(&timestamp.to_xdr(&env));
 
