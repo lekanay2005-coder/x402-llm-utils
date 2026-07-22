@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS api_listings (
+    api_id VARCHAR(64) PRIMARY KEY,
+    provider VARCHAR(56) NOT NULL,
+    endpoint TEXT NOT NULL,
+    price_per_call NUMERIC NOT NULL,
+    metadata_hash VARCHAR(64) NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS escrows (
+    escrow_id VARCHAR(64) PRIMARY KEY,
+    consumer VARCHAR(56) NOT NULL,
+    provider VARCHAR(56) NOT NULL,
+    api_id VARCHAR(64) NOT NULL,
+    amount NUMERIC NOT NULL,
+    state VARCHAR(32) NOT NULL,
+    created_at BIGINT NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
