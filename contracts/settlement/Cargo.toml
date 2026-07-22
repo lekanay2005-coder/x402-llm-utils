@@ -1,0 +1,15 @@
+[package]
+name = "x402-llm-utils-settlement"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+soroban-sdk.workspace = true
+x402-llm-utils-shared.workspace = true
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
