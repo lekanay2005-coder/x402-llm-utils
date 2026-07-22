@@ -1,0 +1,16 @@
+{
+  "name": "@x402-llm-utils/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for x402 LLM-Utility Marketplace Contracts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "^13.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
