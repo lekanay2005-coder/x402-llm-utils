@@ -1,0 +1,8 @@
+/target/
+/.kilo/
+/node_modules/
+/dist/
+/.next/
+*.log
+.env.local
+.env
