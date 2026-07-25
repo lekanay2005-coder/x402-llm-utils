@@ -72,14 +72,155 @@ Registry  ←──  Escrow  ←──  Settlement
 - **Escrow** — Depends on Registry address (validates `api_id` exists). Deployed second.
 - **Settlement** — Depends on Escrow address (for batch payout data). Deployed third.
 
-## Architecture
-- **x402-llm-utils-contract**: Pure Rust/Soroban workspace (`registry`, `escrow`, `settlement`, `shared`).
-- **x402-llm-utils-app**: Monorepo containing `packages/sdk`, `apps/web`, and `indexer/`.
+## Contracts
+
+### Shared (`contracts/shared`)
+
+Shared types used across all contracts:
+- `ContractError` — `Unauthorized`, `AlreadyExists`, `NotFound`, `Paused`, `InvalidPrice`, `InsufficientBalance`, `InvalidState`, `Expired`, `ArithmeticError`, `InvalidVerifier`
+- `ApiListing` — `provider`, `endpoint`, `price_per_call`, `metadata_hash`, `active`
+- `EscrowState` — `Locked`, `Confirmed`, `Refunded`, `Withdrawn`
+- `EscrowRecord` — `consumer`, `provider`, `api_id`, `amount`, `state`, `created_at`
+
+### Registry (`contracts/registry`)
+
+Manages API provider listings.
+
+| Function | Auth | Description |
+|----------|------|-------------|
+| `create_api(provider, endpoint, price, metadata_hash)` | `provider` | Register a new API listing |
+| `change_price(provider, api_id, new_price)` | `provider` | Update price on an existing API |
+| `pause_api(provider, api_id, active)` | `provider` | Pause or resume an API |
+| `get_api(api_id)` | none | Read an API listing |
+
+### Escrow (`contracts/escrow`)
+
+Holds consumer funds in escrow during API call execution. Platform fee: 2%, collected on withdrawal.
+
+| Function | Auth | Description |
+|----------|------|-------------|
+| `initialize(admin, registry, verifier, token, fee_collector)` | `admin` | One-time initialization |
+| `pay(consumer, provider, api_id, amount)` | `consumer` | Lock payment in escrow |
+| `confirm_execution(escrow_id)` | `verifier` | Mark execution as successful |
+| `refund(consumer, escrow_id)` | `consumer` | Refund while still `Locked` |
+| `withdraw(provider, escrow_id)` | `provider` | Withdraw after confirmation (2% fee deducted) |
+| `get_escrow(escrow_id)` | none | Read escrow record |
+
+### Settlement (`contracts/settlement`)
+
+Placeholder for future batch settlement logic.
+
+## Verification Model
+
+- **Lightweight verifier** — checks response within timeout, correct HTTP status, non-empty payload matching schema.
+- **Self-attestation explicitly rejected** — providers cannot confirm their own execution.
+
+## Environment Variables
+
+### Contracts (deployment context)
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `SOROBAN_RPC_URL` | Soroban RPC endpoint | `https://rpc-futurenet.stellar.org` |
+| `SOROBAN_NETWORK_PASSPHRASE` | Network passphrase | `Test SDF Future Network ! Oct 2022` |
+| `ADMIN_SECRET_KEY` | Admin account secret key | `S...` |
+| `TOKEN_CONTRACT_ID` | Token contract used for payments | `C...` |
+| `VERIFIER_SECRET_KEY` | Verifier account for confirm_execution | `S...` |
+| `FEE_COLLECTOR_SECRET_KEY` | Fee collector account | `S...` |
+
+### Indexer
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgres://postgres:postgres@localhost:5432/x402_llm_utils` |
+| `SOROBAN_RPC_URL` | Soroban RPC endpoint | `https://rpc-futurenet.stellar.org` |
+| `REGISTRY_CONTRACT_ID` | Deployed Registry contract ID | `C...` |
+| `ESCROW_CONTRACT_ID` | Deployed Escrow contract ID | `C...` |
+| `POLL_INTERVAL_MS` | Event polling interval | `5000` |
+
+### Web App
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `NEXT_PUBLIC_RPC_URL` | Soroban RPC endpoint (client-side) | `https://rpc-futurenet.stellar.org` |
+| `NEXT_PUBLIC_REGISTRY_ID` | Registry contract ID | `C...` |
+| `NEXT_PUBLIC_ESCROW_ID` | Escrow contract ID | `C...` |
+| `NEXT_PUBLIC_FACILITATOR_URL` | x402 facilitator endpoint | `https://facilitator.stellar.org` |
+| `INDEXER_API_URL` | Indexer API base URL | `https://indexer.render.com` |
+
+### SDK
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `SOROBAN_RPC_URL` | Soroban RPC endpoint | `https://rpc-futurenet.stellar.org` |
+| `NETWORK_PASSPHRASE` | Network passphrase | `Test SDF Future Network ! Oct 2022` |
+
+## Getting Started
+
+### Prerequisites
+
+- Rust 1.75+ (`rustup target add wasm32-unknown-unknown`)
+- Soroban CLI (`cargo install soroban-cli --version 27.0.1`)
+- Node.js 20+
+- PostgreSQL 16+ (for indexer)
+
+### Build Contracts
+
+```bash
+cargo build --target wasm32-unknown-unknown --release
+```
+
+### Test Contracts
+
+```bash
+cargo test
+```
+
+### Deploy (local/testnet)
+
+```bash
+./scripts/deploy.sh
+```
+
+Deployment order: `Registry` → `Escrow` → `Settlement`. Each contract is deployed and initialized sequentially, printing its contract ID.
+
+### SDK
+
+```bash
+cd packages/sdk && npm install && npm run build
+```
+
+### Web App
+
+```bash
+cd apps/web && npm install && npm run dev
+```
+
+### Indexer
+
+```bash
+cd indexer && npm install
+createdb x402_llm_utils && psql x402_llm_utils < schema.sql
+npm run dev
+```
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Blockchain | Stellar / Soroban |
+| Smart Contracts | Rust, `soroban-sdk = "27.0.1"` |
+| SDK | TypeScript, `@stellar/stellar-sdk` |
+| Frontend | Next.js 14 (Pages Router) |
+| Indexer | Node.js + PostgreSQL |
+| Deployment | Vercel (frontend), Render (indexer/API) |
 
 ## Locked Design Choices
-- **Vertical Lock**: LLM-utility APIs only.
-- **Verification Model**: Lightweight verifier call for `confirm_execution()` (response within timeout, correct HTTP status, non-empty payload matching schema). Self-attestation is explicitly rejected.
-- **Platform Fee**: Fixed at 2%, collected on withdrawal in Escrow.
+
+- **Vertical Lock**: LLM-utility APIs only (token counting, embeddings, moderation, document parsing).
+- **Verification**: Lightweight verifier — never the provider themselves.
+- **Platform Fee**: 2%, collected on withdrawal in Escrow.
+- **Protocol**: Built on x402 and Stellar's production x402 facilitator.
 
 ## License
 
