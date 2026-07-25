@@ -5,6 +5,7 @@
 ![Rust](https://img.shields.io/badge/Rust-1.75+-dea584.svg)
 ![Status](https://img.shields.io/badge/Status-Development-yellow)
 [![Drips Wave](https://img.shields.io/badge/Drips%20Wave-Pending-lightgrey)](https://drips.network/wave/stellar)
+![CI](https://github.com/lekanay2005-coder/x402-llm-utils/actions/workflows/ci.yml/badge.svg)
 
 **Pay-per-call LLM utility APIs — token counting, embeddings, moderation, document parsing — with Soroban escrow payments, automatic refunds on failure, and a 2% protocol fee.**
 
@@ -20,10 +21,10 @@ Built using the [Stellar Wave Builder](https://drips.network/wave/stellar) proce
 | 4 — Naming & Scoping | Done |
 | 5 — Contract Architecture | Done |
 | 6 — Contract Implementation | Done |
-| 7 — App Layer | In Progress |
-| 8 — Local Environment & Deployment | Pending |
-| 9 — Hosting & Service Topology | Pending |
-| 10 — Repo Hygiene for Program Approval | Pending |
+| 7 — App Layer | Done |
+| 8 — Local Environment & Deployment | Done |
+| 9 — Hosting & Service Topology | Documented (see below) |
+| 10 — Repo Hygiene for Program Approval | Done |
 | 11 — Documentation Site | Pending |
 | 12 — Drips Wave Submission | Pending |
 
@@ -287,6 +288,11 @@ Coming soon — see Phase 11 of the build process.
 ## Demo
 
 End-to-end walkthrough video — coming after deployment (Phase 8).
+
+## GitHub Topics
+
+For discoverability, add these topics in the repo settings:
+`stellar`, `soroban`, `smart-contracts`, `x402`, `llm`, `pay-per-call`, `marketplace`, `rust`, `rust-wasm`, `typescript`, `nextjs`
 
 ## License
 
