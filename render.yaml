@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: x402-indexer
+    runtime: node
+    repo: https://github.com/lekanay2005-coder/x402-llm-utils
+    branch: main
+    rootDir: indexer
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: x402-llm-utils-db
+          property: connectionString
+      - key: SOROBAN_RPC_URL
+        value: https://rpc-futurenet.stellar.org
+      - key: REGISTRY_CONTRACT_ID
+        sync: false
+      - key: ESCROW_CONTRACT_ID
+        sync: false
+      - key: POLL_INTERVAL_MS
+        value: "10000"
+      - key: PORT
+        value: "3001"
+
+databases:
+  - name: x402-llm-utils-db
+    databaseName: x402_llm_utils
+    plan: free

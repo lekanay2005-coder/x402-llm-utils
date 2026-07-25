@@ -1,0 +1,13 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "env": {
+    "NEXT_PUBLIC_RPC_URL": "@next_public_rpc_url",
+    "NEXT_PUBLIC_REGISTRY_ID": "@next_public_registry_id",
+    "NEXT_PUBLIC_ESCROW_ID": "@next_public_escrow_id",
+    "NEXT_PUBLIC_FACILITATOR_URL": "@next_public_facilitator_url",
+    "NEXT_PUBLIC_INDEXER_API_URL": "@next_public_indexer_api_url"
+  }
+}
