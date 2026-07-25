@@ -222,6 +222,72 @@ npm run dev
 - **Platform Fee**: 2%, collected on withdrawal in Escrow.
 - **Protocol**: Built on x402 and Stellar's production x402 facilitator.
 
+## Maintainers
+
+| Role | Contact |
+|------|---------|
+| Project Lead | [@lekanay2005-coder](https://github.com/lekanay2005-coder) |
+| Drips Wave Submitter | TBD |
+
+## Contributing
+
+We welcome contributions that align with the project's vertical — LLM-utility APIs on Stellar.
+
+### Getting Started
+
+1. Check the [issues](https://github.com/lekanay2005-coder/x402-llm-utils/issues) for open work.
+2. Comment on an issue to claim it.
+3. Fork the repo and create a branch: `git checkout -b feat/my-change`.
+4. Commit using [conventional commits](https://www.conventionalcommits.org/):
+   - `feat:` — new feature
+   - `fix:` — bug fix
+   - `docs:` — documentation
+   - `refactor:` — code restructuring
+   - `test:` — tests
+   - `chore:` — build/tooling
+5. Open a PR against `main`. CI must pass.
+
+### What Not to Do
+
+- Do not add speculative contracts or functions — every contract function must map to a real user-flow step.
+- Do not use `unwrap()` outside tests.
+- Do not introduce floats in any contract code — use basis-points math.
+- Do not commit secrets, `.env` files, or contract IDs without verification.
+
+### PR Checklist
+
+- [ ] Tests pass (`cargo test`)
+- [ ] No `unwrap()` in production code
+- [ ] No floats in contract code
+- [ ] Conventional commit message format
+- [ ] Documentation updated if API surface changed
+
+## Security
+
+### Disclosure
+
+If you find a security vulnerability in any contract or the protocol itself, **do not open a public issue**.
+
+Contact: direct message [@lekanay2005-coder](https://github.com/lekanay2005-coder) on GitHub with details.
+
+### Scope
+
+- `contracts/` — all Soroban smart contracts
+- `packages/sdk/src/` — client-side SDK logic
+- `indexer/src/` — event indexer service
+
+### Audit Disclaimer
+
+These contracts have **not been audited**. Use at your own risk. A formal audit is planned before mainnet deployment.
+
+## Documentation Site
+
+Coming soon — see Phase 11 of the build process.
+
+## Demo
+
+End-to-end walkthrough video — coming after deployment (Phase 8).
+
 ## License
 
 Apache-2.0
