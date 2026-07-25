@@ -23,10 +23,10 @@ Built using the [Stellar Wave Builder](https://drips.network/wave/stellar) proce
 | 6 — Contract Implementation | Done |
 | 7 — App Layer | Done |
 | 8 — Local Environment & Deployment | Done |
-| 9 — Hosting & Service Topology | Documented (see below) |
+| 9 — Hosting & Service Topology | Done |
 | 10 — Repo Hygiene for Program Approval | Done |
-| 11 — Documentation Site | Pending |
-| 12 — Drips Wave Submission | Pending |
+| 11 — Documentation Site | Done |
+| 12 — Drips Wave Submission | Ready (run `scripts/submit-wave.sh`) |
 
 ## Architecture
 
